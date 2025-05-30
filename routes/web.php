@@ -43,9 +43,7 @@ Route::middleware(['auth', 'verified', 'role:organization_admin'])->group(functi
     // Position Management
     Route::resource('positions', PositionController::class)->except(['show', 'create']);
 
-    // Candidate Management
-    Route::get('/candidates', [CandidateController::class, 'index'])->name('candidates.index');
-    Route::get('/candidates/{candidate}', [CandidateController::class, 'show'])->name('candidates.show');
+    // Candidate Approval/Rejection (Admin only)
     Route::patch('/candidates/{candidate}/approve', [CandidateController::class, 'approve'])->name('candidates.approve');
     Route::patch('/candidates/{candidate}/reject', [CandidateController::class, 'reject'])->name('candidates.reject');
 
@@ -55,6 +53,7 @@ Route::middleware(['auth', 'verified', 'role:organization_admin'])->group(functi
 
     // Voter Accreditation
     Route::get('/voter-accreditation', [VoterAccreditationController::class, 'index'])->name('voter-accreditation.index');
+    Route::get('/voter-accreditation/{accreditation}', [VoterAccreditationController::class, 'show'])->name('voter-accreditation.show');
     Route::post('/voter-accreditation/{accreditation}/approve', [VoterAccreditationController::class, 'approve'])->name('voter-accreditation.approve');
     Route::post('/voter-accreditation/{accreditation}/reject', [VoterAccreditationController::class, 'reject'])->name('voter-accreditation.reject');
 });
@@ -72,6 +71,10 @@ Route::middleware(['auth', 'verified', 'role:voter'])->group(function () {
 
 // Candidate registration routes (accessible by both voters and organization admins)
 Route::middleware(['auth', 'verified', 'role:voter,organization_admin'])->group(function () {
+    // Candidate Management (viewing and registration)
+    Route::get('/candidates', [CandidateController::class, 'index'])->name('candidates.index');
+    Route::get('/candidates/{candidate}', [CandidateController::class, 'show'])->name('candidates.show');
+
     // Candidate Registration
     Route::get('/candidate/register', [CandidateController::class, 'create'])->name('candidates.register');
     Route::get('/candidates/create', [CandidateController::class, 'create'])->name('candidates.create');

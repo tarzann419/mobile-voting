@@ -87,6 +87,11 @@ class CandidateRepository implements CandidateRepositoryInterface
             });
         }
 
+        // Filter by user (for voters to see only their own applications)
+        if (!empty($filters['user_id'])) {
+            $query->where('user_id', $filters['user_id']);
+        }
+
         return $query->orderBy('created_at', 'desc')->get();
     }
 
@@ -110,6 +115,11 @@ class CandidateRepository implements CandidateRepositoryInterface
             $query->whereHas('position', function ($q) use ($filters) {
                 $q->where('election_id', $filters['election_id']);
             });
+        }
+
+        // Filter by user (for voters to see only their own applications)
+        if (!empty($filters['user_id'])) {
+            $query->where('user_id', $filters['user_id']);
         }
 
         return $query->orderBy('created_at', 'desc')->paginate($perPage);

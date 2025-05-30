@@ -47,6 +47,18 @@ class ElectionSeeder extends Seeder
             case 'University Student Union':
                 $baseElections = [
                     [
+                        'title' => 'Test Election - Student Government 2024',
+                        'description' => 'Test election for student government positions including President, Vice President, Secretary, and Treasurer for voting system testing.',
+                        'status' => 'active',
+                        'registration_start_date' => now()->subDays(10),
+                        'registration_end_date' => now()->subDays(1),
+                        'voting_start_date' => now(),
+                        'voting_end_date' => now()->addDays(7),
+                        'allow_multiple_votes' => false,
+                        'require_payment' => false,
+                        'settings' => ['anonymous_voting' => true, 'show_results_after' => true],
+                    ],
+                    [
                         'title' => 'Student Government Elections 2024',
                         'description' => 'Annual elections for student government positions including President, Vice President, and Senate representatives.',
                         'status' => 'published',

@@ -86,6 +86,20 @@ class DashboardController extends Controller
         $user = Auth::user();
         $organization = $user->organization;
 
+        // If user doesn't have an organization, show minimal dashboard
+        if (!$organization) {
+            $voter_status = [
+                'is_accredited' => false,
+                'elections_participated' => 0,
+                'total_votes_cast' => 0,
+            ];
+
+            $available_elections = collect();
+            $voting_history = collect();
+
+            return view('dashboards.voter', compact('voter_status', 'available_elections', 'voting_history'));
+        }
+
         // Check voter accreditation status
         $accreditation = VoterAccreditation::where('user_id', $user->id)
             ->where('organization_id', $organization->id)

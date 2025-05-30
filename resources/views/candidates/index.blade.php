@@ -2,7 +2,11 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Candidate Management') }}
+                @if(auth()->user()->isOrganizationAdmin())
+                    {{ __('Candidate Management') }}
+                @else
+                    {{ __('My Candidate Applications') }}
+                @endif
             </h2>
             <div class="flex space-x-2">
                 @if(auth()->user()->isOrganizationAdmin())
@@ -10,9 +14,7 @@
                         Add Candidate
                     </a>
                 @endif
-                <a href="{{ route('candidates.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Register as Candidate
-                </a>
+                
             </div>
         </div>
     </x-slot>
@@ -176,7 +178,7 @@
                                                     <a href="{{ route('candidates.show', $candidate->id) }}" class="text-indigo-600 hover:text-indigo-900">
                                                         View
                                                     </a>
-                                                    @if($candidate->status === 'pending')
+                                                    @if($candidate->status === 'pending' && auth()->user()->role === 'organization_admin')
                                                         <form action="{{ route('candidates.approve', $candidate->id) }}" method="POST" class="inline">
                                                             @csrf
                                                             @method('PATCH')

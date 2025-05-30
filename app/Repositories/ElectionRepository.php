@@ -83,7 +83,7 @@ class ElectionRepository implements ElectionRepositoryInterface
                 $voteCount = $candidate->votes->count();
                 $positionResults['candidates'][] = [
                     'candidate' => $candidate,
-                    'vote_count' => $voteCount,
+                    'votes' => $voteCount,
                     'percentage' => 0 // Will be calculated after getting total
                 ];
                 $positionResults['total_votes'] += $voteCount;
@@ -93,7 +93,7 @@ class ElectionRepository implements ElectionRepositoryInterface
             foreach ($positionResults['candidates'] as &$candidateResult) {
                 if ($positionResults['total_votes'] > 0) {
                     $candidateResult['percentage'] = round(
-                        ($candidateResult['vote_count'] / $positionResults['total_votes']) * 100,
+                        ($candidateResult['votes'] / $positionResults['total_votes']) * 100,
                         2
                     );
                 }
@@ -101,7 +101,7 @@ class ElectionRepository implements ElectionRepositoryInterface
 
             // Sort by vote count
             usort($positionResults['candidates'], function ($a, $b) {
-                return $b['vote_count'] <=> $a['vote_count'];
+                return $b['votes'] <=> $a['votes'];
             });
 
             $results[] = $positionResults;

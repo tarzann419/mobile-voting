@@ -60,6 +60,11 @@ class VoterAccreditationController extends Controller
     {
         $user = Auth::user();
 
+        // Check if user has an organization
+        if (!$user->organization_id) {
+            return redirect()->route('dashboard')->with('error', 'You must be assigned to an organization before applying for voter accreditation. Please contact your organization administrator.');
+        }
+
         // Get available elections for the user's organization that are accepting registrations
         $elections = $this->electionRepository->findByOrganization($user->organization_id)
             ->filter(function ($election) {
@@ -80,6 +85,11 @@ class VoterAccreditationController extends Controller
         ]);
 
         $user = Auth::user();
+
+        // Check if user has an organization
+        if (!$user->organization_id) {
+            return redirect()->route('dashboard')->with('error', 'You must be assigned to an organization before applying for voter accreditation. Please contact your organization administrator.');
+        }
 
         // Verify election belongs to user's organization
         $election = Election::where('id', $request->election_id)
@@ -121,6 +131,24 @@ class VoterAccreditationController extends Controller
 
         return redirect()->route('dashboard')
             ->with('success', 'Your voter accreditation application has been submitted successfully.');
+    }
+
+    /**
+     * Show voter accreditation details
+     */
+    public function show(VoterAccreditation $accreditation)
+    {
+        $user = Auth::user();
+
+        // Verify accreditation belongs to user's organization
+        if ($accreditation->organization_id !== $user->organization_id) {
+            abort(403);
+        }
+
+        // Load relationships
+        $accreditation->load(['user', 'election', 'reviewer']);
+
+        return view('voter-accreditation.show', compact('accreditation'));
     }
 
     /**

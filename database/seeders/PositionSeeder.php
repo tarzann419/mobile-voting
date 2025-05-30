@@ -40,6 +40,39 @@ class PositionSeeder extends Seeder
         $positions = [];
 
         switch ($election->title) {
+            case 'Test Election - Student Government 2024':
+                $positions = [
+                    [
+                        'title' => 'President',
+                        'description' => 'Chief executive officer responsible for leading the student body and representing student interests.',
+                        'max_candidates' => 4,
+                        'order' => 1,
+                        'amount_required' => 0,
+                    ],
+                    [
+                        'title' => 'Vice President',
+                        'description' => 'Second in command, supports the President and leads special initiatives.',
+                        'max_candidates' => 3,
+                        'order' => 2,
+                        'amount_required' => 0,
+                    ],
+                    [
+                        'title' => 'Secretary',
+                        'description' => 'Maintains official records, minutes, and handles correspondence.',
+                        'max_candidates' => 3,
+                        'order' => 3,
+                        'amount_required' => 0,
+                    ],
+                    [
+                        'title' => 'Treasurer',
+                        'description' => 'Manages financial affairs, budgets, and financial reporting.',
+                        'max_candidates' => 2,
+                        'order' => 4,
+                        'amount_required' => 0,
+                    ],
+                ];
+                break;
+
             case 'Student Government Elections 2024':
                 $positions = [
                     [

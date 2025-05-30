@@ -33,7 +33,7 @@ class RoleMiddleware
             case 'organization_admin':
                 return redirect('/organization/dashboard');
             case 'voter':
-                return redirect('/voter/dashboard');
+                return redirect('/dashboard');
             default:
                 abort(403, 'Unauthorized access.');
         }

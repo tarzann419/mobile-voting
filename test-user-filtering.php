@@ -43,7 +43,7 @@ try {
         ->get();
 
     echo "🗳️  Existing candidates: " . count($existingCandidates) . "\n";
-    
+
     if (count($existingCandidates) > 0) {
         echo "   Existing candidates:\n";
         foreach ($existingCandidates as $candidate) {
@@ -58,7 +58,7 @@ try {
     $availableUsers = $allVoters->whereNotIn('id', $candidateUserIds);
 
     echo "\n✅ Available users for candidate creation: " . count($availableUsers) . "\n";
-    
+
     if (count($availableUsers) > 0) {
         echo "   Available users:\n";
         foreach ($availableUsers->take(5) as $user) {
@@ -73,7 +73,7 @@ try {
 
     // Test the actual controller logic simulation
     echo "\n🔄 Simulating Controller Logic...\n";
-    
+
     // This simulates what the adminCreate method does
     $simulatedCandidateUserIds = DB::connection('mysql')->table('candidates')
         ->join('positions', 'candidates.position_id', '=', 'positions.id')
@@ -101,7 +101,6 @@ try {
 
     echo "\n🎉 User filtering test completed successfully!\n";
     echo "✅ Users who are already candidates are properly excluded from the dropdown.\n";
-
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";

@@ -1,1 +1,1 @@
-"Candidates: " . $candidate1- . ", " . $candidate2- . "n"
+-  . $org- . PHP_EOL

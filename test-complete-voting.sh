@@ -63,9 +63,11 @@ if (\$accreditation) {
     App\Models\VoterAccreditation::create([
         'user_id' => \$user->id,
         'election_id' => $ELECTION_ID,
+        'organization_id' => \$user->organization_id,
         'status' => 'approved',
-        'approved_at' => now(),
-        'approved_by' => 1 // Admin user
+        'applied_at' => now(),
+        'reviewed_at' => now(),
+        'reviewed_by' => 1 // Admin user
     ]);
     echo 'Accreditation created ✅' . PHP_EOL;
 }

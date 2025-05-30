@@ -8,6 +8,29 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             
+            <!-- Status Messages -->
+            @if(session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4 dark:bg-green-800 dark:border-green-600 dark:text-green-200">
+                    <span class="block sm:inline">{{ session('success') }}</span>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 dark:bg-red-800 dark:border-red-600 dark:text-red-200">
+                    <span class="block sm:inline">{{ session('error') }}</span>
+                </div>
+            @endif
+
+            @if($errors->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 dark:bg-red-800 dark:border-red-600 dark:text-red-200">
+                    <ul class="list-disc list-inside">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            
             <!-- Welcome Message -->
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
@@ -22,7 +45,11 @@
                                 Welcome, {{ auth()->user()->name }}!
                             </h3>
                             <p class="text-gray-600 dark:text-gray-400">
-                                You are registered as a voter for {{ auth()->user()->organization->name }}
+                                @if(auth()->user()->organization)
+                                    You are registered as a voter for {{ auth()->user()->organization->name }}
+                                @else
+                                    Please complete your voter accreditation to participate in elections
+                                @endif
                             </p>
                         </div>
                     </div>
@@ -76,6 +103,60 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Voter Accreditation -->
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Voter Accreditation</h3>
+                    </div>
+                    @if(!auth()->user()->organization)
+                        <div class="flex items-center p-4 bg-red-50 dark:bg-red-900 rounded-lg mb-4">
+                            <div class="flex-shrink-0">
+                                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-red-800 dark:text-red-200">Organization Assignment Required</p>
+                                <p class="text-sm text-red-700 dark:text-red-300">You must be assigned to an organization before you can apply for voter accreditation. Please contact your organization administrator.</p>
+                            </div>
+                        </div>
+                    @elseif($voter_status['is_accredited'] ?? false)
+                        <div class="flex items-center p-4 bg-green-50 dark:bg-green-900 rounded-lg">
+                            <div class="flex-shrink-0">
+                                <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-green-800 dark:text-green-200">You are fully accredited</p>
+                                <p class="text-sm text-green-700 dark:text-green-300">You can participate in all available elections.</p>
+                            </div>
+                        </div>
+                    @else
+                        <div class="flex items-center p-4 bg-yellow-50 dark:bg-yellow-900 rounded-lg mb-4">
+                            <div class="flex-shrink-0">
+                                <svg class="w-8 h-8 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-yellow-800 dark:text-yellow-200">Accreditation Required</p>
+                                <p class="text-sm text-yellow-700 dark:text-yellow-300">You need to apply for voter accreditation to participate in elections.</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="{{ route('voter-accreditation.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Apply for Accreditation
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -204,21 +285,23 @@
             </div>
 
             <!-- Candidate Registration (if applicable) -->
-            @if(auth()->user()->organization->settings['allow_candidate_registration'] ?? true)
+            @if(auth()->user()->organization && (auth()->user()->organization->settings['allow_candidate_registration'] ?? true))
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Become a Candidate</h3>
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">My Candidate Applications</h3>
                     </div>
                     <p class="text-gray-600 dark:text-gray-400 mb-4">
-                        Interested in running for a position? Register as a candidate for upcoming elections.
+                        View your candidate applications and their current status.
                     </p>
-                    <a href="{{ route('candidates.register') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
-                        Register as Candidate
-                    </a>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="{{ route('candidates.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                            </svg>
+                            View My Applications
+                        </a>
+                    </div>
                 </div>
             </div>
             @endif

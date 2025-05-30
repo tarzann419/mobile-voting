@@ -83,7 +83,7 @@
                     </div>
 
                     <!-- Action Buttons -->
-                    @if($candidate->status === 'pending')
+                    @if($candidate->status === 'pending' && auth()->user()->role === 'organization_admin')
                         <div class="mt-6 flex space-x-4">
                             <form action="{{ route('candidates.approve', $candidate->id) }}" method="POST" class="inline">
                                 @csrf

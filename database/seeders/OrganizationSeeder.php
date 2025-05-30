@@ -99,7 +99,7 @@ class OrganizationSeeder extends Seeder
                     'email' => $orgData['admin_email'],
                     'password' => Hash::make('password'),
                     'organization_id' => $organization->id,
-                    'role' => 'organization_admin',
+                    'role' => 'admin',
                     'phone' => $orgData['admin_phone'],
                     'is_active' => true,
                     'email_verified_at' => now(),

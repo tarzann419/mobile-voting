@@ -141,8 +141,14 @@
                                                 @endif
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                @if($accreditation->status === 'pending')
-                                                    <div class="flex space-x-2">
+                                                <div class="flex space-x-2">
+                                                    <!-- View Button -->
+                                                    <a href="{{ route('voter-accreditation.show', $accreditation) }}" 
+                                                       class="text-blue-600 hover:text-blue-900">
+                                                        View
+                                                    </a>
+                                                    
+                                                    @if($accreditation->status === 'pending')
                                                         <!-- Approve Button -->
                                                         <form method="POST" action="{{ route('voter-accreditation.approve', $accreditation) }}" class="inline">
                                                             @csrf
@@ -159,10 +165,8 @@
                                                                 onclick="openRejectModal({{ $accreditation->id }})">
                                                             Reject
                                                         </button>
-                                                    </div>
-                                                @else
-                                                    <span class="text-gray-400">No actions</span>
-                                                @endif
+                                                    @endif
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach

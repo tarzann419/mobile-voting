@@ -24,3 +24,27 @@ Homestead.yaml
 npm-debug.log
 Thumbs.db
 yarn-error.log
+
+# Test files and scripts
+*.sh
+test-*.php
+test_*.php
+debug-*.php
+validate-*.php
+simple-debug.php
+demo-*.php
+*-test.php
+*-validation.php
+*-validation.sh
+system-test.php
+final-*.sh
+
+# Specific oddly named files that appear to be temporary/test files
+bio}n"
+getMessage
+id}n"
+name
+organization_id}n"
+status}n"
+title
+email

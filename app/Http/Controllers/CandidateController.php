@@ -18,7 +18,8 @@ class CandidateController extends Controller
 
     public function index(Request $request)
     {
-        $organizationId = Auth::user()->organization_id;
+        $user = Auth::user();
+        $organizationId = $user->organization_id;
 
         // Prepare filters
         $filters = [];
@@ -30,6 +31,11 @@ class CandidateController extends Controller
         }
         if ($request->filled('election_id')) {
             $filters['election_id'] = $request->election_id;
+        }
+
+        // Add user filter for voters (they should only see their own applications)
+        if ($user->role === 'voter') {
+            $filters['user_id'] = $user->id;
         }
 
         // Get paginated filtered candidates
@@ -126,6 +132,16 @@ class CandidateController extends Controller
             abort(403, 'Unauthorized access');
         }
 
+        // Prevent users from approving their own applications
+        if (Auth::user()->id === $candidate->user_id) {
+            abort(403, 'You cannot approve your own candidate application');
+        }
+
+        // Only organization admins can approve candidates
+        if (Auth::user()->role !== 'organization_admin') {
+            abort(403, 'Only organization administrators can approve candidates');
+        }
+
         try {
             $this->candidateService->approveCandidate($id, Auth::user()->id);
 
@@ -150,6 +166,16 @@ class CandidateController extends Controller
         // Check if user has access to reject this candidate
         if (Auth::user()->organization_id !== $candidate->position->election->organization_id) {
             abort(403, 'Unauthorized access');
+        }
+
+        // Prevent users from rejecting their own applications
+        if (Auth::user()->id === $candidate->user_id) {
+            abort(403, 'You cannot reject your own candidate application');
+        }
+
+        // Only organization admins can reject candidates
+        if (Auth::user()->role !== 'organization_admin') {
+            abort(403, 'Only organization administrators can reject candidates');
         }
 
         try {

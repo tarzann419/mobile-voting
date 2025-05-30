@@ -42,7 +42,7 @@ try {
     // Step 2: Show existing candidates
     echo "\n🗳️  STEP 2: Existing Candidates\n";
     echo "------------------------------\n";
-    
+
     $existingCandidates = DB::connection('mysql')->table('candidates')
         ->join('positions', 'candidates.position_id', '=', 'positions.id')
         ->join('elections', 'positions.election_id', '=', 'elections.id')
@@ -52,11 +52,11 @@ try {
         ->get();
 
     echo "Total candidate registrations: " . count($existingCandidates) . "\n";
-    
+
     // Group by user to show unique candidates
     $candidatesByUser = $existingCandidates->groupBy('user_id');
     echo "Unique users who are candidates: " . count($candidatesByUser) . "\n\n";
-    
+
     foreach ($candidatesByUser as $userId => $userCandidates) {
         $userName = $userCandidates->first()->user_name;
         echo "   👤 {$userName} (ID: {$userId})\n";
@@ -68,16 +68,16 @@ try {
     // Step 3: Apply filtering logic
     echo "\n🔍 STEP 3: Applying Filter Logic\n";
     echo "-------------------------------\n";
-    
+
     $candidateUserIds = $candidatesByUser->keys()->toArray();
     echo "User IDs to exclude: [" . implode(', ', $candidateUserIds) . "]\n";
-    
+
     $availableUsers = $allVoters->whereNotIn('id', $candidateUserIds);
-    
+
     echo "\n✅ STEP 4: Available Users for Candidate Creation\n";
     echo "------------------------------------------------\n";
     echo "Available users: " . count($availableUsers) . "\n";
-    
+
     if (count($availableUsers) > 0) {
         echo "Users eligible for candidate creation:\n";
         foreach ($availableUsers as $user) {
@@ -90,7 +90,7 @@ try {
     // Step 5: Verify controller logic matches
     echo "\n🔄 STEP 5: Controller Logic Verification\n";
     echo "---------------------------------------\n";
-    
+
     // Simulate the exact controller logic
     $repositoryResult = DB::connection('mysql')->table('candidates')
         ->join('positions', 'candidates.position_id', '=', 'positions.id')
@@ -108,7 +108,7 @@ try {
         ->get();
 
     echo "Controller logic result: " . count($controllerAvailableUsers) . " available users\n";
-    
+
     if (count($availableUsers) === count($controllerAvailableUsers)) {
         echo "✅ Filter logic verification: PASSED\n";
         echo "✅ Existing candidates are properly excluded from the dropdown\n";
@@ -125,9 +125,8 @@ try {
     echo "• Users who are candidates: " . count($candidatesByUser) . "\n";
     echo "• Users available for new candidacies: " . count($availableUsers) . "\n";
     echo "• Filtering working correctly: " . (count($availableUsers) === count($controllerAvailableUsers) ? 'YES' : 'NO') . "\n";
-    
-    echo "\n🎉 User filtering comprehensive test completed!\n";
 
+    echo "\n🎉 User filtering comprehensive test completed!\n";
 } catch (Exception $e) {
     echo "❌ Error: " . $e->getMessage() . "\n";
     echo "Stack trace:\n" . $e->getTraceAsString() . "\n";
